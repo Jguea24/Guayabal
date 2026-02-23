@@ -1,6 +1,5 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { addToCartService } from "../services/cartService";
-import { getToken } from "../shared/storage/authStorage";
 
 export function useCartViewModel() {
   const [loading, setLoading] = useState(false);
@@ -11,13 +10,7 @@ export function useCartViewModel() {
       setLoading(true);
       setMessage(null);
 
-      const token = await getToken();
-      if (!token) {
-        setMessage("Sesión no válida");
-        return;
-      }
-
-      await addToCartService(productId, token);
+      await addToCartService(productId);
       setMessage("Producto agregado al carrito");
     } catch {
       setMessage("Error al agregar al carrito");

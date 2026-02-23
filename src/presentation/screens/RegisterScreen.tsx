@@ -18,15 +18,20 @@ export function RegisterScreen({ navigation }: any) {
     email: "",
     phone: "",
     full_name: "",
+    address: "",
     password: "",
     password2: "",
+    role: "client" as "client" | "driver" | "provider",
+    role_reason: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
 
   const onChange = (key: string, value: string) =>
     setForm({ ...form, [key]: value });
 
   const handleRegister = async () => {
-    const success = await register({ ...form, role: "client" });
+    const success = await register({ ...form });
     if (success) {
       navigation.replace("Login", { presetId: form.email || form.phone });
     }
@@ -48,22 +53,29 @@ export function RegisterScreen({ navigation }: any) {
         <View style={styles.blobAlt} />
       </View>
 
-      <View style={styles.header}>
-        <Image
-          source={require("../../shared/assets/logo.png")}
-          style={styles.logo}
-        />
-        <Text style={styles.brand}>Guayabal</Text>
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <View style={styles.logoBadge}>
+            <Image
+              source={require("../../shared/assets/logo.png")}
+              style={styles.logo}
+            />
+          </View>
+          <View>
+            <Text style={styles.brand}>Guayabal</Text>
+            <Text style={styles.brandSub}>Licoreria premium</Text>
+          </View>
+        </View>
+
+        <View style={styles.divider} />
+
         <Text style={styles.title}>Crear cuenta</Text>
         <Text style={styles.subtitle}>Registra un nuevo usuario</Text>
-      </View>
-
-      <View style={styles.card}>
         <Text style={styles.label}>Correo</Text>
         <TextInput
           style={styles.input}
           placeholder="correo@ejemplo.com"
-          placeholderTextColor="#6b7280"
+          placeholderTextColor="#9b8b7b"
           autoCapitalize="none"
           keyboardType="email-address"
           value={form.email}
@@ -74,7 +86,7 @@ export function RegisterScreen({ navigation }: any) {
         <TextInput
           style={styles.input}
           placeholder="09xxxxxxxx"
-          placeholderTextColor="#6b7280"
+          placeholderTextColor="#9b8b7b"
           keyboardType="phone-pad"
           value={form.phone}
           onChangeText={(v) => onChange("phone", v)}
@@ -84,30 +96,99 @@ export function RegisterScreen({ navigation }: any) {
         <TextInput
           style={styles.input}
           placeholder="Opcional"
-          placeholderTextColor="#6b7280"
+          placeholderTextColor="#9b8b7b"
           value={form.full_name}
           onChangeText={(v) => onChange("full_name", v)}
         />
 
-        <Text style={styles.label}>Contrasena</Text>
+        <Text style={styles.label}>Direccion</Text>
         <TextInput
           style={styles.input}
-          placeholder="********"
-          placeholderTextColor="#6b7280"
-          secureTextEntry
-          value={form.password}
-          onChangeText={(v) => onChange("password", v)}
+          placeholder="Calle y numero"
+          placeholderTextColor="#9b8b7b"
+          value={form.address}
+          onChangeText={(v) => onChange("address", v)}
         />
 
-        <Text style={styles.label}>Confirmar contrasena</Text>
+        <Text style={styles.label}>Rol</Text>
+        <View style={styles.roleRow}>
+          {[
+            { key: "client", label: "Cliente" },
+            { key: "driver", label: "Driver" },
+            { key: "provider", label: "Proveedor" },
+          ].map((item, idx, arr) => (
+            <TouchableOpacity
+              key={item.key}
+              style={[
+                styles.roleChip,
+                idx === arr.length - 1 && styles.roleChipLast,
+                form.role === item.key && styles.roleChipActive,
+              ]}
+              onPress={() => onChange("role", item.key)}
+            >
+              <Text
+                style={[
+                  styles.roleText,
+                  form.role === item.key && styles.roleTextActive,
+                ]}
+              >
+                {item.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        <Text style={styles.roleHint}>
+          Si eliges driver/proveedor, explica el motivo.
+        </Text>
+
+        <Text style={styles.label}>Motivo del rol</Text>
         <TextInput
           style={styles.input}
-          placeholder="********"
-          placeholderTextColor="#6b7280"
-          secureTextEntry
-          value={form.password2}
-          onChangeText={(v) => onChange("password2", v)}
+          placeholder="Opcional"
+          placeholderTextColor="#9b8b7b"
+          value={form.role_reason}
+          onChangeText={(v) => onChange("role_reason", v)}
         />
+
+        <Text style={styles.label}>Contrasena</Text>
+        <View style={styles.passwordRow}>
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="********"
+            placeholderTextColor="#9b8b7b"
+            secureTextEntry={!showPassword}
+            value={form.password}
+            onChangeText={(v) => onChange("password", v)}
+          />
+          <TouchableOpacity
+            style={styles.toggle}
+            onPress={() => setShowPassword(!showPassword)}
+          >
+            <Text style={styles.toggleText}>
+              {showPassword ? "Ocultar" : "Ver"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.label}>Confirmar contrasena</Text>
+        <View style={styles.passwordRow}>
+          <TextInput
+            style={styles.passwordInput}
+            placeholder="********"
+            placeholderTextColor="#9b8b7b"
+            secureTextEntry={!showPassword2}
+            value={form.password2}
+            onChangeText={(v) => onChange("password2", v)}
+          />
+          <TouchableOpacity
+            style={styles.toggle}
+            onPress={() => setShowPassword2(!showPassword2)}
+          >
+            <Text style={styles.toggleText}>
+              {showPassword2 ? "Ocultar" : "Ver"}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
 

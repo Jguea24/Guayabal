@@ -5,7 +5,10 @@ import {
   RegisterPayload,
 } from "../services/authService";
 import { setTokens } from "../services/api";
-import { saveUsername } from "../shared/storage/authStorage";
+import {
+  saveUsername,
+  saveUserProfile,
+} from "../shared/storage/authStorage";
 
 export function useAuthViewModel() {
   const [loading, setLoading] = useState(false);
@@ -30,6 +33,14 @@ export function useAuthViewModel() {
       setLoading(true);
       setError(null);
       await registerService(payload);
+      await saveUserProfile({
+        full_name: payload.full_name,
+        email: payload.email,
+        phone: payload.phone,
+        address: payload.address,
+        role: payload.role,
+        role_reason: payload.role_reason,
+      });
       return true;
     } catch (err: any) {
       setError(String(extractError(err, "Error al registrar usuario")));
@@ -48,8 +59,17 @@ export function useAuthViewModel() {
 
       if (data?.access) {
         await setTokens({ access: data.access, refresh: data.refresh });
+        const user = data.user || {};
         const displayName =
-          data.user?.full_name || data.user?.email || identifier;
+          user.full_name || user.email || user.username || identifier;
+        await saveUserProfile({
+          full_name: user.full_name || user.name || user.username,
+          email: user.email,
+          phone: user.phone || user.phone_number,
+          address: user.address || user.main_address,
+          role: user.role,
+          role_reason: user.role_reason,
+        });
         await saveUsername(String(displayName));
         return true;
       }

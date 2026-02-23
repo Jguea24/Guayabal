@@ -36,37 +36,51 @@ export function LoginScreen({ navigation, route }: any) {
       keyboardShouldPersistTaps="handled"
     >
       <View style={styles.background}>
-        <View style={styles.blob} />
-        <View style={styles.blobAlt} />
-      </View>
-
-      <View style={styles.header}>
-        <Image
-          source={require("../../shared/assets/logo.png")}
-          style={styles.logo}
-        />
-        <Text style={styles.brand}>Guayabal</Text>
-        <Text style={styles.title}>Inicia sesion</Text>
-        <Text style={styles.subtitle}>Accede con tu email o telefono</Text>
+        <View style={styles.circleTop} />
+        <View style={styles.circleBottom} />
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.label}>Email o telefono</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="correo@ejemplo.com / 09xxxxxxxx"
-          placeholderTextColor="#6b7280"
-          autoCapitalize="none"
-          value={identifier}
-          onChangeText={setIdentifier}
-        />
+        <View style={styles.cardHeader}>
+          <View style={styles.logoBadge}>
+            <Image
+              source={require("../../shared/assets/logo.png")}
+              style={styles.logo}
+            />
+          </View>
+          <View>
+            <Text style={styles.brand}>Guayabal</Text>
+            <Text style={styles.brandSub}>Licoreria premium</Text>
+          </View>
+        </View>
 
-        <Text style={styles.label}>Contrasena</Text>
-        <View style={styles.passwordRow}>
+        <View style={styles.divider} />
+
+        <Text style={styles.title}>Iniciar sesion</Text>
+        <Text style={styles.helper}>Ingresa con tu correo o telefono.</Text>
+
+        <View style={styles.inputRow}>
+          <View style={styles.inputIcon}>
+            <Text style={styles.inputIconText}>@</Text>
+          </View>
           <TextInput
-            style={[styles.input, styles.passwordInput]}
-            placeholder="********"
-            placeholderTextColor="#6b7280"
+            style={styles.inputField}
+            placeholder="Correo o telefono"
+            placeholderTextColor="#9b8b7b"
+            autoCapitalize="none"
+            value={identifier}
+            onChangeText={setIdentifier}
+          />
+        </View>
+
+        <View style={styles.inputRow}>
+          <View style={styles.inputIcon}>
+            <Text style={styles.inputIconText}>*</Text>
+          </View>
+          <TextInput
+            style={styles.inputField}
+            placeholder="Contrasena"
+            placeholderTextColor="#9b8b7b"
             secureTextEntry={!showPassword}
             value={password}
             onChangeText={setPassword}
@@ -94,7 +108,7 @@ export function LoginScreen({ navigation, route }: any) {
           {loading ? (
             <ActivityIndicator color="#ffffff" />
           ) : (
-            <Text style={styles.buttonText}>Iniciar sesion</Text>
+            <Text style={styles.buttonText}>Entrar</Text>
           )}
         </TouchableOpacity>
 
@@ -102,10 +116,7 @@ export function LoginScreen({ navigation, route }: any) {
           onPress={() => navigation.navigate("Register")}
           style={styles.linkContainer}
         >
-          <Text style={styles.linkText}>
-            No tienes cuenta?{" "}
-            <Text style={styles.linkTextBold}>Registrate</Text>
-          </Text>
+          <Text style={styles.linkText}>Crear cuenta nueva</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

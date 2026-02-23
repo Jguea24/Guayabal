@@ -19,3 +19,8 @@ export const getProductsService = async (category?: CategoryFilter) => {
   const response = await api.get("products/", { params });
   return response.data;
 };
+
+export const getProductByIdService = async (id: number) => {
+  const response = await api.get(`products/${id}/`);
+  return response.data;
+};
