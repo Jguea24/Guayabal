@@ -2,11 +2,12 @@ import { api } from "./api";
 
 export const addToCartService = async (
   productId: number,
-  token: string
+  token: string,
+  quantity = 1
 ) => {
   const response = await api.post(
     "cart/",
-    { product_id: productId, quantity: 1 },
+    { product: productId, quantity },
     {
       headers: {
         Authorization: `Bearer ${token}`,

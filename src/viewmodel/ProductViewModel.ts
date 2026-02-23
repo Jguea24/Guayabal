@@ -1,30 +1,36 @@
 import { useEffect, useState } from "react";
 import { getProductsService } from "../services/productService";
-import { getToken } from "../shared/storage/authStorage";
 import { Product } from "../model/Product";
 
-export function useProductViewModel() {
+export function useProductViewModel(category?: string | number) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        const token = await getToken();
-        if (!token) return;
+    let isMounted = true;
 
-        const data = await getProductsService(token);
-        setProducts(data);
+    const loadProducts = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const data = await getProductsService(category);
+        if (isMounted) {
+          setProducts(data);
+        }
       } catch {
-        setError("Error al cargar productos");
+        if (isMounted) setError("Error al cargar productos");
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     loadProducts();
-  }, []);
+    return () => {
+      isMounted = false;
+    };
+  }, [category]);
 
   return { products, loading, error };
 }

@@ -1,10 +1,157 @@
 import { StyleSheet } from "react-native";
 
 export const homeStyles = StyleSheet.create({
+  page: {
+    flex: 1,
+    backgroundColor: "#0f7b74",
+  },
+
   container: {
     flex: 1,
-    backgroundColor: "#f5f7fa",
+    backgroundColor: "#e9f4f2",
     padding: 20,
+    borderTopLeftRadius: 26,
+    borderTopRightRadius: 26,
+    marginTop: 12,
+  },
+
+  topRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 18,
+  },
+
+  timeLabel: {
+    fontSize: 12,
+    color: "#9db7b3",
+  },
+
+  greetingLabel: {
+    fontSize: 13,
+    color: "#9db7b3",
+  },
+
+  greetingName: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: "#0f1d1b",
+  },
+
+  statusText: {
+    fontSize: 12,
+    color: "#9db7b3",
+  },
+
+  topActions: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  avatar: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: "#0f7b74",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 10,
+  },
+
+  avatarText: {
+    color: "#ffffff",
+    fontWeight: "700",
+  },
+
+  searchButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: "#ffffff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  searchButtonIcon: {
+    fontSize: 16,
+  },
+
+  menuButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: "#0f1d1b",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 10,
+  },
+
+  menuIcon: {
+    color: "#ffffff",
+    fontSize: 18,
+    fontWeight: "700",
+  },
+
+  searchRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+
+  searchInputWrapper: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+    borderRadius: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: "#c9e3df",
+  },
+
+  searchIcon: {
+    marginRight: 8,
+    fontSize: 16,
+    color: "#8ca7a3",
+  },
+
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    color: "#0f1d1b",
+  },
+
+  filterButton: {
+    width: 46,
+    height: 46,
+    borderRadius: 14,
+    backgroundColor: "#0f7b74",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 10,
+  },
+
+  filterIcon: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+
+  cartButton: {
+    width: 46,
+    height: 46,
+    borderRadius: 14,
+    backgroundColor: "#0f172a",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 10,
+  },
+
+  cartIcon: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "700",
   },
 
   header: {
@@ -61,8 +208,20 @@ export const homeStyles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#1f2933",
-    marginBottom: 12,
+    color: "#0f1d1b",
+  },
+
+  resultsHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 8,
+    marginBottom: 8,
+  },
+
+  seeAll: {
+    color: "#0f7b74",
+    fontWeight: "600",
   },
 
   error: {
@@ -178,47 +337,176 @@ bannerText: {
   color: "#1f2933",
 },
 
-categoryChip: {
-  backgroundColor: "#e5e7eb",
-  paddingHorizontal: 14,
-  paddingVertical: 8,
-  borderRadius: 20,
-  marginRight: 10,
-},
+  categoryChip: {
+    backgroundColor: "#d8eae7",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 18,
+    marginRight: 12,
+  },
 
-categoryActive: {
-  backgroundColor: "#2563eb",
-},
+  categoryActive: {
+    backgroundColor: "#0f7b74",
+  },
 
-categoryText: {
-  color: "#374151",
-  fontWeight: "500",
-},
+  categoryText: {
+    color: "#0f1d1b",
+    fontWeight: "500",
+  },
 
-categoryTextActive: {
-  color: "#ffffff",
-},
+  categoryTextActive: {
+    color: "#ffffff",
+  },
 
-productGridCard: {
-  flex: 1,
-  backgroundColor: "#ffffff",
-  borderRadius: 14,
-  padding: 12,
-  margin: 8,
-  elevation: 3,
-},
+  categoriesRow: {
+    marginBottom: 12,
+  },
 
-productImage: {
-  width: "100%",
-  height: 90,
-  resizeMode: "contain",
-  marginBottom: 6,
-},
+  productGridCard: {
+    width: "48%",
+    backgroundColor: "#ffffff",
+    borderRadius: 18,
+    padding: 12,
+    marginBottom: 14,
+    shadowColor: "#000",
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 3,
+  },
 
-productPrice: {
-  fontWeight: "700",
-  marginBottom: 6,
-},
+  productImageWrapper: {
+    backgroundColor: "#f1f6f5",
+    borderRadius: 16,
+    paddingVertical: 14,
+    alignItems: "center",
+    marginBottom: 10,
+  },
+
+  productImage: {
+    width: 90,
+    height: 110,
+    resizeMode: "contain",
+  },
+
+  productPrice: {
+    fontWeight: "800",
+    marginRight: 8,
+    color: "#0f7b74",
+  },
+
+  oldPrice: {
+    color: "#9ca3af",
+    textDecorationLine: "line-through",
+    marginBottom: 6,
+  },
+
+  productMeta: {
+    color: "#6b7280",
+    fontSize: 12,
+    marginBottom: 4,
+  },
+
+  priceRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+
+  addButton: {
+    backgroundColor: "#0f7b74",
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: "center",
+  },
+
+  addButtonText: {
+    color: "#ffffff",
+    fontWeight: "700",
+  },
+
+  heroCard: {
+    backgroundColor: "#c1e7df",
+    borderRadius: 20,
+    padding: 18,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+    width: "100%",
+  },
+
+  heroTitle: {
+    color: "#0f1d1b",
+    fontSize: 18,
+    fontWeight: "800",
+  },
+
+  heroSubtitle: {
+    color: "#0f1d1b",
+    fontSize: 14,
+    marginBottom: 8,
+  },
+
+  heroCta: {
+    backgroundColor: "#0f7b74",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
+    alignSelf: "flex-start",
+  },
+
+  heroCtaText: {
+    color: "#ffffff",
+    fontWeight: "700",
+  },
+
+  heroImage: {
+    width: 90,
+    height: 90,
+    resizeMode: "contain",
+  },
+
+  dotsRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 12,
+  },
+
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#bedad4",
+    marginHorizontal: 4,
+  },
+
+  dotActive: {
+    backgroundColor: "#0f7b74",
+  },
+
+  bottomNav: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    backgroundColor: "#ffffff",
+    paddingVertical: 12,
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+  },
+
+  bottomItem: {
+    alignItems: "center",
+  },
+
+  bottomIcon: {
+    fontSize: 18,
+  },
+
+  bottomLabel: {
+    fontSize: 11,
+    color: "#0f1d1b",
+    marginTop: 2,
+  },
 
 /* ========================= */
 /*   WELCOME / ONBOARDING   */

@@ -1,30 +1,27 @@
-import { api } from "./api";
+﻿import { api } from "./api";
 
-export const registerService = async (
-  username: string,
-  email: string,
-  password: string
-) => {
-  const response = await api.post("register/", {
-    username,
-    email,
-    password,
-  });
+export type RegisterPayload = {
+  email: string;
+  phone: string;
+  password: string;
+  password2: string;
+  full_name?: string;
+  address?: string;
+  role?: "client" | "driver" | "provider";
+  role_reason?: string;
+};
+
+export const loginService = async (identifier: string, password: string) => {
+  const response = await api.post("/login/", { identifier, password });
   return response.data;
 };
 
-export const loginService = async (
-  username: string,
-  password: string
-) => {
-  const response = await api.post("login/", {
-    username,
-    password,
-  });
+export const registerService = async (payload: RegisterPayload) => {
+  const response = await api.post("/register/", payload);
   return response.data;
 };
 
 export const refreshTokenService = async (refresh: string) => {
-  const response = await api.post("token/refresh/", { refresh });
+  const response = await api.post("/token/refresh/", { refresh });
   return response.data;
 };

@@ -1,11 +1,12 @@
-import axios from "axios";
+﻿import axios from "axios";
 import { Platform } from "react-native";
-import { getToken } from "../shared/storage/authStorage";
+import {
+  getToken,
+  getRefreshToken,
+  removeToken,
+  saveAuthTokens,
+} from "../shared/storage/authStorage";
 
-// Ajusta la IP/host según tu entorno:
-// - Emulador Android: http://10.0.2.2:8000/
-// - iOS simulador / escritorio con backend local: http://localhost:8000/
-// - Dispositivo físico: http://<TU-IP-LAN>:8000/
 const DEFAULT_BASE_URL =
   Platform.OS === "android"
     ? "http://10.0.2.2:8000/"
@@ -17,14 +18,60 @@ export const api = axios.create({
     "Content-Type": "application/json",
     Accept: "application/json",
   },
-  timeout: 10000,
+  timeout: 8000,
 });
 
-// Inserta el JWT en cada petición si existe.
-api.interceptors.request.use(async (config) => {
-  const token = await getToken();
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+let accessToken = "";
+let refreshToken = "";
+
+export const hydrateTokens = async () => {
+  accessToken = (await getToken()) || "";
+  refreshToken = (await getRefreshToken()) || "";
+  return { accessToken, refreshToken };
+};
+
+export const setTokens = async (tokens: { access: string; refresh?: string }) => {
+  accessToken = tokens.access;
+  if (tokens.refresh) refreshToken = tokens.refresh;
+  await saveAuthTokens(accessToken, refreshToken);
+};
+
+export const clearTokens = async () => {
+  accessToken = "";
+  refreshToken = "";
+  await removeToken();
+};
+
+api.interceptors.request.use((config) => {
+  if (accessToken) {
+    config.headers = {
+      ...(config.headers || {}),
+      Authorization: "Bearer " + accessToken,
+    };
   }
   return config;
 });
+
+api.interceptors.response.use(
+  (res) => res,
+  async (error) => {
+    const original: any = error.config || {};
+    if (error.response?.status === 401 && refreshToken && !original._retry) {
+      original._retry = true;
+      try {
+        const base = api.defaults.baseURL || DEFAULT_BASE_URL;
+        const refreshUrl = base.endsWith("/")
+          ? base + "token/refresh/"
+          : base + "/token/refresh/";
+        const { data } = await axios.post(refreshUrl, {
+          refresh: refreshToken,
+        });
+        await setTokens({ access: data.access, refresh: refreshToken });
+        return api(original);
+      } catch (refreshErr) {
+        await clearTokens();
+      }
+    }
+    return Promise.reject(error);
+  }
+);

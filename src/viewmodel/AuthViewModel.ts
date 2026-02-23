@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { loginService, registerService } from "../services/authService";
+﻿import { useState } from "react";
 import {
-  saveAuthTokens,
-  saveUsername, // 👈 NUEVO
-} from "../shared/storage/authStorage";
+  loginService,
+  registerService,
+  RegisterPayload,
+} from "../services/authService";
+import { setTokens } from "../services/api";
+import { saveUsername } from "../shared/storage/authStorage";
 
 export function useAuthViewModel() {
   const [loading, setLoading] = useState(false);
@@ -23,15 +25,11 @@ export function useAuthViewModel() {
     return detail || fallback;
   };
 
-  const register = async (
-    username: string,
-    email: string,
-    password: string
-  ) => {
+  const register = async (payload: RegisterPayload) => {
     try {
       setLoading(true);
       setError(null);
-      await registerService(username, email, password);
+      await registerService(payload);
       return true;
     } catch (err: any) {
       setError(String(extractError(err, "Error al registrar usuario")));
@@ -41,21 +39,22 @@ export function useAuthViewModel() {
     }
   };
 
-  const login = async (username: string, password: string) => {
+  const login = async (identifier: string, password: string) => {
     try {
       setLoading(true);
       setError(null);
 
-      const data = await loginService(username, password);
+      const data = await loginService(identifier, password);
 
-      // JWT típico en Django REST Framework
-      if (data.access) {
-        await saveAuthTokens(data.access, data.refresh);
-        await saveUsername(username); // 👈 GUARDAMOS EL USUARIO
+      if (data?.access) {
+        await setTokens({ access: data.access, refresh: data.refresh });
+        const displayName =
+          data.user?.full_name || data.user?.email || identifier;
+        await saveUsername(String(displayName));
         return true;
       }
 
-      setError("Respuesta inválida del servidor");
+      setError("Respuesta invalida del servidor");
       return false;
     } catch (err: any) {
       setError(String(extractError(err, "Credenciales incorrectas")));
