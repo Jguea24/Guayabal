@@ -1,5 +1,6 @@
-﻿import React from "react";
+import React from "react";
 import {
+  Alert,
   View,
   Text,
   Image,
@@ -10,7 +11,7 @@ import { useCartViewModel } from "../../viewmodel/CartViewModel";
 import { productDetailStyles as styles } from "../styles/productDetail.styles";
 
 export function ProductDetailScreen({ navigation, route }: any) {
-  const { addToCart } = useCartViewModel();
+  const { addToCart, loading } = useCartViewModel();
   const product = route?.params?.product;
 
   if (!product) {
@@ -28,6 +29,15 @@ export function ProductDetailScreen({ navigation, route }: any) {
       </View>
     );
   }
+
+  const handleAddToCart = async () => {
+    const result = await addToCart(product.id);
+
+    Alert.alert(
+      result.ok ? "Carrito" : "No se pudo agregar",
+      result.message
+    );
+  };
 
   return (
     <View style={styles.page}>
@@ -66,7 +76,8 @@ export function ProductDetailScreen({ navigation, route }: any) {
 
           <View style={styles.priceRow}>
             <Text style={styles.price}>
-              ${product.price?.toFixed ? product.price.toFixed(2) : product.price}
+              $
+              {product.price?.toFixed ? product.price.toFixed(2) : product.price}
             </Text>
             {product.old_price ? (
               <Text style={styles.oldPrice}>
@@ -81,15 +92,11 @@ export function ProductDetailScreen({ navigation, route }: any) {
           <View style={styles.metaRow}>
             <View style={styles.metaPill}>
               <Text style={styles.metaLabel}>Stock</Text>
-              <Text style={styles.metaValue}>
-                {product.stock ?? 0}
-              </Text>
+              <Text style={styles.metaValue}>{product.stock ?? 0}</Text>
             </View>
             <View style={styles.metaPill}>
               <Text style={styles.metaLabel}>Rating</Text>
-              <Text style={styles.metaValue}>
-                {product.rating ?? "-"}
-              </Text>
+              <Text style={styles.metaValue}>{product.rating ?? "-"}</Text>
             </View>
             <View style={[styles.metaPill, styles.metaPillLast]}>
               <Text style={styles.metaLabel}>Resenas</Text>
@@ -110,9 +117,12 @@ export function ProductDetailScreen({ navigation, route }: any) {
       <View style={styles.footer}>
         <TouchableOpacity
           style={styles.addButton}
-          onPress={() => addToCart(product.id)}
+          onPress={handleAddToCart}
+          disabled={loading}
         >
-          <Text style={styles.addButtonText}>Agregar al carrito</Text>
+          <Text style={styles.addButtonText}>
+            {loading ? "Agregando..." : "Agregar al carrito"}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

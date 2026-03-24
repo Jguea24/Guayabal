@@ -5,6 +5,35 @@ const REFRESH_KEY = "refresh_token";
 const USERNAME_KEY = "auth_username";
 const PROFILE_KEY = "auth_profile";
 
+export type ProfilePreferences = {
+  notifications_enabled?: boolean;
+  language?: string;
+  dark_mode?: boolean;
+  [key: string]: unknown;
+};
+
+export type ProfileStat = {
+  id?: string;
+  label?: string;
+  value?: string | number | null;
+  subtitle?: string;
+};
+
+export type ProfileMenuItem = {
+  id?: string;
+  title?: string;
+  subtitle?: string;
+  type?: string;
+  action?: string;
+  value?: string | number | boolean | null;
+};
+
+export type ProfileMenuSection = {
+  id?: string;
+  title?: string;
+  items?: ProfileMenuItem[];
+};
+
 export type UserProfile = {
   full_name?: string;
   email?: string;
@@ -12,6 +41,11 @@ export type UserProfile = {
   address?: string;
   role?: string;
   role_reason?: string;
+  photo_url?: string;
+  role_label?: string;
+  preferences?: ProfilePreferences;
+  stats?: ProfileStat[];
+  menu_sections?: ProfileMenuSection[];
 };
 
 export const saveAuthTokens = async (access: string, refresh?: string) => {
@@ -41,7 +75,13 @@ export const getRefreshToken = async () => {
 
 export const saveUserProfile = async (profile: UserProfile) => {
   const current = await getUserProfile();
-  const merged = { ...(current || {}), ...(profile || {}) };
+  const merged: UserProfile = { ...(current || {}), ...(profile || {}) };
+  if (current?.preferences || profile?.preferences) {
+    merged.preferences = {
+      ...(current?.preferences || {}),
+      ...(profile?.preferences || {}),
+    };
+  }
   await AsyncStorage.setItem(PROFILE_KEY, JSON.stringify(merged));
 };
 

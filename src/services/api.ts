@@ -42,12 +42,27 @@ export const clearTokens = async () => {
   await removeToken();
 };
 
+export const resolveApiUrl = (path?: string | null) => {
+  if (!path) return undefined;
+  if (/^https?:\/\//i.test(path)) return path;
+
+  const base = api.defaults.baseURL || DEFAULT_BASE_URL;
+  const normalizedBase = base.endsWith("/") ? base.slice(0, -1) : base;
+  const normalizedPath = path.startsWith("/") ? path : "/" + path;
+
+  return normalizedBase + normalizedPath;
+};
+
 api.interceptors.request.use((config) => {
   if (accessToken) {
-    config.headers = {
-      ...(config.headers || {}),
-      Authorization: "Bearer " + accessToken,
-    };
+    if (config.headers && typeof (config.headers as any).set === "function") {
+      (config.headers as any).set("Authorization", "Bearer " + accessToken);
+    } else {
+      config.headers = {
+        ...(config.headers || {}),
+        Authorization: "Bearer " + accessToken,
+      } as any;
+    }
   }
   return config;
 });

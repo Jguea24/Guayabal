@@ -2,7 +2,7 @@ import { api } from "./api";
 
 type CategoryFilter = string | number | undefined;
 
-export const getProductsService = async (category?: CategoryFilter) => {
+export const buildProductQueryParams = (category?: CategoryFilter) => {
   const params: Record<string, string | number> = {};
 
   if (typeof category === "number") {
@@ -16,6 +16,11 @@ export const getProductsService = async (category?: CategoryFilter) => {
     params.category = category;
   }
 
+  return params;
+};
+
+export const getProductsService = async (category?: CategoryFilter) => {
+  const params = buildProductQueryParams(category);
   const response = await api.get("products/", { params });
   return response.data;
 };

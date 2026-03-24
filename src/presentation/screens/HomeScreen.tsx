@@ -13,7 +13,8 @@
   Alert,
 } from "react-native";
 import { useEffect, useMemo, useState } from "react";
-import { getUsername, removeToken } from "../../shared/storage/authStorage";
+import { clearTokens } from "../../services/api";
+import { getUsername } from "../../shared/storage/authStorage";
 import { useProductViewModel } from "../../viewmodel/ProductViewModel";
 import { useCartViewModel } from "../../viewmodel/CartViewModel";
 import { useCategoryViewModel } from "../../viewmodel/CategoryViewModel";
@@ -53,6 +54,17 @@ const fallbackHeroCards = [
   },
 ];
 
+const bottomNavItems = [
+  { label: "Inicio", icon: "⌂", active: true },
+  { label: "Buscar", icon: "⌕" },
+  {
+    label: "Carrito",
+    image: require("../../shared/assets/cart.png"),
+  },
+  { label: "Favoritos", icon: "♡" },
+  { label: "Perfil", icon: "◉", route: "Profile" },
+];
+
 export function HomeScreen({ navigation }: any) {
   const [username, setUsername] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] =
@@ -66,7 +78,7 @@ export function HomeScreen({ navigation }: any) {
   const { products, loading, error } = useProductViewModel(
     selectedCategory.value
   );
-  const { addToCart } = useCartViewModel();
+  const { addToCart, loading: cartLoading } = useCartViewModel();
   const { categories, loading: categoriesLoading } = useCategoryViewModel();
   const { banners } = useBannerViewModel();
 
@@ -75,7 +87,7 @@ export function HomeScreen({ navigation }: any) {
   }, []);
 
   const logout = async () => {
-    await removeToken();
+    await clearTokens();
     navigation.replace("Auth");
   };
 
@@ -131,6 +143,15 @@ export function HomeScreen({ navigation }: any) {
   const displayName = username ?? "Invitado";
   const avatarLetter = displayName.trim().charAt(0).toUpperCase() || "G";
 
+  const handleAddToCart = async (productId: number) => {
+    const result = await addToCart(productId);
+
+    Alert.alert(
+      result.ok ? "Carrito" : "No se pudo agregar",
+      result.message
+    );
+  };
+
   const handleHeroScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const { contentOffset, layoutMeasurement } = e.nativeEvent;
     const index = Math.round(contentOffset.x / layoutMeasurement.width);
@@ -156,7 +177,10 @@ export function HomeScreen({ navigation }: any) {
             <Text style={styles.statusText}>Que tomamos hoy</Text>
           </View>
           <View style={styles.topActions}>
-            <TouchableOpacity style={styles.avatar}>
+            <TouchableOpacity
+              style={styles.avatar}
+              onPress={() => navigation.navigate("Profile")}
+            >
               <Text style={styles.avatarText}>{avatarLetter}</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -338,69 +362,70 @@ export function HomeScreen({ navigation }: any) {
           contentContainerStyle={{ marginTop: 6, paddingBottom: 24 }}
           columnWrapperStyle={{ justifyContent: "space-between" }}
           renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.productGridCard}
-              activeOpacity={0.9}
-              onPress={() =>
-                navigation.navigate("ProductDetail", { product: item })
-              }
-            >
-              <View style={styles.productImageWrapper}>
-                {item.old_price ? (
-                  <View style={styles.discountBadge}>
-                    <Text style={styles.discountText}>OFERTA</Text>
-                  </View>
-                ) : null}
-                <Image
-                  source={
-                    item.image_url
-                      ? { uri: item.image_url }
-                      : require("../../shared/assets/bottle.png")
-                  }
-                  style={styles.productImage}
-                />
-              </View>
+            <View style={styles.productGridCard}>
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() =>
+                  navigation.navigate("ProductDetail", { product: item })
+                }
+              >
+                <View style={styles.productImageWrapper}>
+                  {item.old_price ? (
+                    <View style={styles.discountBadge}>
+                      <Text style={styles.discountText}>OFERTA</Text>
+                    </View>
+                  ) : null}
+                  <Image
+                    source={
+                      item.image_url
+                        ? { uri: item.image_url }
+                        : require("../../shared/assets/bottle.png")
+                    }
+                    style={styles.productImage}
+                  />
+                </View>
 
-              <Text style={styles.productName} numberOfLines={1}>
-                {item.name}
-              </Text>
-              <Text style={styles.productMeta} numberOfLines={1}>
-                {item.description ?? "Bebida premium"}
-              </Text>
-
-              <View style={styles.priceRow}>
-                <Text style={styles.productPrice}>
-                  ${item.price?.toFixed ? item.price.toFixed(2) : item.price}
+                <Text style={styles.productName} numberOfLines={1}>
+                  {item.name}
                 </Text>
-                {item.old_price ? (
-                  <Text style={styles.oldPrice}>
-                    $
-                    {item.old_price?.toFixed
-                      ? item.old_price.toFixed(2)
-                      : item.old_price}
+                <Text style={styles.productMeta} numberOfLines={1}>
+                  {item.description ?? "Bebida premium"}
+                </Text>
+
+                <View style={styles.priceRow}>
+                  <Text style={styles.productPrice}>
+                    ${item.price?.toFixed ? item.price.toFixed(2) : item.price}
                   </Text>
-                ) : null}
-              </View>
+                  {item.old_price ? (
+                    <Text style={styles.oldPrice}>
+                      $
+                      {item.old_price?.toFixed
+                        ? item.old_price.toFixed(2)
+                        : item.old_price}
+                    </Text>
+                  ) : null}
+                </View>
+              </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => addToCart(item.id)}
+                style={[
+                  styles.addButton,
+                  cartLoading && styles.addButtonDisabled,
+                ]}
+                onPress={() => handleAddToCart(item.id)}
+                disabled={cartLoading}
               >
-                <Text style={styles.addButtonText}>Agregar</Text>
+                <Text style={styles.addButtonText}>
+                  {cartLoading ? "Agregando..." : "Agregar"}
+                </Text>
               </TouchableOpacity>
-            </TouchableOpacity>
+            </View>
           )}
         />
       </ScrollView>
 
       <View style={styles.bottomNav}>
-        {[
-          { label: "Inicio", active: true },
-          { label: "Buscar" },
-          { label: "Carrito" },
-          { label: "Favoritos" },
-          { label: "Perfil", route: "Profile" },
-        ].map((item) => (
+        {bottomNavItems.map((item) => (
           <TouchableOpacity
             key={item.label}
             style={styles.bottomItem}
@@ -408,6 +433,25 @@ export function HomeScreen({ navigation }: any) {
               if (item.route) navigation.navigate(item.route);
             }}
           >
+            <View
+              style={[
+                styles.bottomIconWrap,
+                item.active && styles.bottomIconWrapActive,
+              ]}
+            >
+              {item.image ? (
+                <Image source={item.image} style={styles.bottomIconImage} />
+              ) : (
+                <Text
+                  style={[
+                    styles.bottomIconText,
+                    item.active && styles.bottomIconTextActive,
+                  ]}
+                >
+                  {item.icon}
+                </Text>
+              )}
+            </View>
             <Text
               style={[
                 styles.bottomLabel,

@@ -378,6 +378,9 @@ export const homeStyles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
   },
+  addButtonDisabled: {
+    opacity: 0.7,
+  },
   addButtonText: {
     color: "#ffffff",
     fontWeight: "700",
@@ -394,6 +397,34 @@ export const homeStyles = StyleSheet.create({
   },
   bottomItem: {
     alignItems: "center",
+    minWidth: 56,
+  },
+  bottomIconWrap: {
+    width: 34,
+    height: 34,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f7efe8",
+    marginBottom: 6,
+  },
+  bottomIconWrapActive: {
+    backgroundColor: "#f3e1d4",
+  },
+  bottomIconText: {
+    fontSize: 18,
+    color: "#8a7464",
+    fontWeight: "700",
+    lineHeight: 20,
+  },
+  bottomIconTextActive: {
+    color: "#7a1f2b",
+  },
+  bottomIconImage: {
+    width: 18,
+    height: 18,
+    resizeMode: "contain",
+    tintColor: "#8a7464",
   },
   bottomLabel: {
     fontSize: 12,

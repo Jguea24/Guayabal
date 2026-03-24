@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   ScrollView,
   Image,
+  Alert,
 } from "react-native";
 import { useAuthViewModel } from "../../viewmodel/AuthViewModel";
 import { registerStyles as styles } from "../styles/register.styles";
@@ -21,8 +22,6 @@ export function RegisterScreen({ navigation }: any) {
     address: "",
     password: "",
     password2: "",
-    role: "client" as "client" | "driver" | "provider",
-    role_reason: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
@@ -33,7 +32,15 @@ export function RegisterScreen({ navigation }: any) {
   const handleRegister = async () => {
     const success = await register({ ...form });
     if (success) {
-      navigation.replace("Login", { presetId: form.email || form.phone });
+      Alert.alert("Exito", "Registro completado correctamente.", [
+        {
+          text: "OK",
+          onPress: () =>
+            navigation.replace("Login", {
+              presetId: form.email || form.phone,
+            }),
+        },
+      ]);
     }
   };
 
@@ -108,46 +115,6 @@ export function RegisterScreen({ navigation }: any) {
           placeholderTextColor="#9b8b7b"
           value={form.address}
           onChangeText={(v) => onChange("address", v)}
-        />
-
-        <Text style={styles.label}>Rol</Text>
-        <View style={styles.roleRow}>
-          {[
-            { key: "client", label: "Cliente" },
-            { key: "driver", label: "Driver" },
-            { key: "provider", label: "Proveedor" },
-          ].map((item, idx, arr) => (
-            <TouchableOpacity
-              key={item.key}
-              style={[
-                styles.roleChip,
-                idx === arr.length - 1 && styles.roleChipLast,
-                form.role === item.key && styles.roleChipActive,
-              ]}
-              onPress={() => onChange("role", item.key)}
-            >
-              <Text
-                style={[
-                  styles.roleText,
-                  form.role === item.key && styles.roleTextActive,
-                ]}
-              >
-                {item.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        <Text style={styles.roleHint}>
-          Si eliges driver/proveedor, explica el motivo.
-        </Text>
-
-        <Text style={styles.label}>Motivo del rol</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Opcional"
-          placeholderTextColor="#9b8b7b"
-          value={form.role_reason}
-          onChangeText={(v) => onChange("role_reason", v)}
         />
 
         <Text style={styles.label}>Contrasena</Text>

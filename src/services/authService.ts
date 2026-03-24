@@ -7,8 +7,6 @@ export type RegisterPayload = {
   password2: string;
   full_name?: string;
   address?: string;
-  role?: "client" | "driver" | "provider";
-  role_reason?: string;
 };
 
 export const loginService = async (identifier: string, password: string) => {

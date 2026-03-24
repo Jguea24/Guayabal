@@ -108,41 +108,6 @@ export const registerStyles = StyleSheet.create({
     color: "#0f172a",
     marginBottom: 12,
   },
-  roleRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 8,
-  },
-  roleChip: {
-    flex: 1,
-    backgroundColor: "#fffaf6",
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#e6c9b7",
-    paddingVertical: 10,
-    alignItems: "center",
-    marginRight: 8,
-  },
-  roleChipLast: {
-    marginRight: 0,
-  },
-  roleChipActive: {
-    backgroundColor: "#7a1f2b",
-    borderColor: "#7a1f2b",
-  },
-  roleText: {
-    color: "#5f4a3c",
-    fontWeight: "600",
-    fontSize: 12,
-  },
-  roleTextActive: {
-    color: "#fff7f1",
-  },
-  roleHint: {
-    color: "#7b6a5b",
-    fontSize: 11,
-    marginBottom: 10,
-  },
   passwordRow: {
     flexDirection: "row",
     alignItems: "center",

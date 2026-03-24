@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   ScrollView,
   Image,
+  Alert,
 } from "react-native";
 import { useAuthViewModel } from "../../viewmodel/AuthViewModel";
 import { loginStyles as styles } from "../styles/login.styles";
@@ -25,7 +26,14 @@ export function LoginScreen({ navigation, route }: any) {
 
   const handleLogin = async () => {
     const success = await login(identifier.trim(), password);
-    if (success) navigation.replace("Home");
+    if (success) {
+      Alert.alert("Exito", "Inicio de sesion correcto.", [
+        {
+          text: "OK",
+          onPress: () => navigation.replace("Home"),
+        },
+      ]);
+    }
   };
 
   const isValid = identifier.trim().length > 0 && password.length > 0;
