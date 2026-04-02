@@ -1,6 +1,6 @@
 ﻿# 📱 Licorería Guayabal – App móvil
 
-Aplicación React Native (CLI) con arquitectura **MVVM**. Incluye registro e inicio de sesión, persistencia de token y vistas protegidas que consumen una **API REST**.
+Aplicación React Native (CLI) con arquitectura **MVVM**. Incluye onboarding, autenticación, catálogo de productos, perfil de usuario y consumo de una **API REST**.
 
 ---
 
@@ -72,12 +72,39 @@ npx react-native start
 
 ---
 
-## ✨ Funcionalidades
-- Registro e inicio de sesión
-- Persistencia de sesión (token)
-- Vistas protegidas y cierre de sesión
-- Flujo de onboarding
-- Diseño consistente y separación por MVVM
+## ✅ Implementación (UI y flujo)
+- Onboarding con pantallas: Welcome, Benefits, Permissions, Access
+- Registro e inicio de sesión con validaciones y mensajes
+- Persistencia de sesión y navegación protegida
+- Home con banners, categorías, búsqueda y listado de productos
+- Detalle de producto con imagen, precio, stock, rating y agregar al carrito
+- Perfil con datos del usuario, resumen, preferencias y cierre de sesión
+
+---
+
+## ✅ Implementación (sesión y almacenamiento)
+- Tokens guardados en AsyncStorage
+- Refresh token automático en el interceptor de Axios
+- Perfil cacheado y preferencias persistidas
+- Flag de onboarding guardado localmente
+
+---
+
+## ✅ Implementación (servicios/API listos)
+- Auth: login, registro y refresh token
+- Productos: listado y detalle
+- Categorías y banners
+- Carrito: agregar, listar, actualizar y eliminar
+- Perfil: obtener y actualizar, cambio de contraseña
+- Direcciones: CRUD
+- Órdenes: crear y listar
+- Geolocalización: autocomplete y geocode
+- Solicitud de roles: driver / provider
+
+---
+
+## ✅ Pruebas
+- Tests unitarios para authLogic, authStorage, productService, profileLogic y App
 
 ---
 
